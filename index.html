@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Question</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Ask a Question</h1>
+    <form id="question-form">
+        <input type="text" id="question" placeholder="Enter your question" required />
+        <button type="submit">Ask</button>
+    </form>
+    <div id="answer"></div>
+
+    <script>
+        $(document).ready(function(){
+            $('#question-form').on('submit', function(e){
+                e.preventDefault();
+                var question = $('#question').val();
+                $.ajax({
+                    url: '/ask',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ question: question }),
+                    success: function(data) {
+                        $('#answer').html('<h2>Answer: </h2>' + data.answer);
+                    },
+                    error: function(error) {
+                        $('#answer').html('<h2>Error occurred!</h2>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
