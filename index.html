@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ask a Question</title>
+    <title>GPT-2 Chatbot</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>Ask a Question</h1>
-    <form id="question-form">
-        <input type="text" id="question" placeholder="Enter your question" required />
-        <button type="submit">Ask</button>
-    </form>
-    <div id="answer"></div>
+    <h1>Ask me a question!</h1>
+    <div>
+        <label for="question">Enter your question:</label>
+        <textarea id="question" rows="1" cols="50"></textarea>
+        <button onclick="askQuestion()">Ask</button>
+    </div>
+    <div id="answer" style="margin-top: 20px;"></div>
 
     <script>
-        $(document).ready(function(){
-            $('#question-form').on('submit', function(e){
-                e.preventDefault();
-                var question = $('#question').val();
-                $.ajax({
-                    url: '/ask',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ question: question }),
-                    success: function(data) {
-                        $('#answer').html('<h2>Answer: </h2>' + data.answer);
-                    },
-                    error: function(error) {
-                        $('#answer').html('<h2>Error occurred!</h2>');
-                    }
-                });
+        function askQuestion() {
+            var question = $("#question").val();
+            if (question.trim() == "") {
+                alert("Please enter a question.");
+                return;
+            }
+
+            // Sending a POST request to /ask endpoint
+            $.ajax({
+                url: "/ask",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ "question": question }),
+                success: function(response) {
+                    $("#answer").html("<strong>Answer:</strong><p>" + response.answer + "</p>");
+                },
+                error: function(error) {
+                    $("#answer").html("<strong>Error:</strong><p>" + error.responseJSON.error + "</p>");
+                }
             });
-        });
+        }
     </script>
 </body>
 </html>
